@@ -47,6 +47,7 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
 
     Route::get('/fb/redirect', 'AdminController@redirectFacebook');
     Route::get('/fb/connect', 'AdminController@connectFacebook');
+
 });
 
 Route::get('/password/forgot', 'RemindersController@getRemind');
@@ -54,54 +55,3 @@ Route::post('/password/remind', 'RemindersController@postRemind');
 
 Route::get('/password/reset/{token}', 'RemindersController@getReset');
 Route::post('/password/reset', 'RemindersController@postReset');
-
-Route::get('/tester', function(){
-
-    //$client = new GuzzleHttp\Client();
-
-    $extended_accesstoken = 'CAAHpfXuL3vQBAH32HYIV9EcZC4BQz7fm4dWA1USfg9ZB1wX3kNKGr1tPsOgap2lV7EMXEh4fuP5CkGmgUmgg7SE91fErZBm6HfTZBAhJuXZB9EKRHndh3AHTNaozWe46AWrF2mEAkkBYWASrQVxI6OJyQKxUu5cwhtZCshGkzYkqZATwo4Eix36&expires=5183208';
-
-    return preg_replace('/&expires\=[0-9]*/', '', $extended_accesstoken);
-
-            //get pages
-            $res = $client->get('https://graph.facebook.com/me/accounts', array(
-                'query' => array(
-                    'access_token' => $extended_accesstoken
-                    )
-                ));
-            $response_body = $res->getBody();
-            $pages = json_decode($response_body, true);
-
-            if(!empty($pages['data'])){
-                foreach($pages['data'] as $page){
-
-                    if(in_array('CREATE_CONTENT', $page['perms'])){
-
-                        $page_id = $page['id'];
-                        $page_name = $page['name'];
-                        $page_accesstoken = $page['access_token'];
-
-                        $network = Network::where('user_id', '=', $user_id)
-                            ->where('network', '=', $network_type)
-                            ->where('network_id', '=', $page_id)
-                            ->first();
-
-                        if(!empty($network)){
-                            $network->user_token = $page_accesstoken;
-                            $network->save();
-                        }else{
-                            $network = new Network;
-                            $network->user_id = $user_id;
-                            $network->network = $network_type;
-                            $network->user_token = $page_accesstoken;
-                            $network->network_id = $page_id;
-                            $network->username = $page_name;
-                            $network->save();
-                        }
-
-                    }
-
-                }
-            }
-
-});
