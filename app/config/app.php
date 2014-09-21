@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
+        'Philo\Twitter\TwitterServiceProvider',
 
 	),
 
@@ -190,7 +191,10 @@ return array(
 		'URL'             => 'Illuminate\Support\Facades\URL',
 		'Validator'       => 'Illuminate\Support\Facades\Validator',
 		'View'            => 'Illuminate\Support\Facades\View',
-
+        'Carbon'          => 'Carbon\Carbon',
+        'Twitter'         => 'Philo\Twitter\Facades\Twitter',
+        'Linkedin'        => 'League\OAuth2\Client\Provider\LinkedIn',
+        'Facebook'        => 'League\OAuth2\Client\Provider\Facebook',
 	),
 
 );

@@ -39,6 +39,10 @@
       </div>
       <div class="navbar-collapse collapse navbar-responsive-collapse">
 
+        <ul class="nav navbar-nav">
+          <li><a href="/networks">Networks</a></li>
+        </ul>
+
         <ul class="nav navbar-nav navbar-right">
 
           <li class="dropdown">
