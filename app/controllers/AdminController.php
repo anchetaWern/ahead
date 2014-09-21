@@ -317,6 +317,73 @@ class AdminController extends BaseController {
     }
 
 
+    public function newPost(){
+
+        $networks = Network::where('user_id', '=', Auth::user()->id)->get();
+
+        $page_data = array(
+            'networks' => $networks
+        );
+        $this->layout->title = 'Schedule New Post';
+        $this->layout->content = View::make('admin.new_post', $page_data);
+    }
+
+
+    public function createPost(){
+
+        $user_id = Auth::user()->id;
+
+        $rules = array(
+            'content' => 'required'
+        );
+
+        $validator = Validator::make(Input::all(), $rules);
+
+        if($validator->fails()){
+            return Redirect::to('/post/new')
+                ->withErrors($validator);
+        }
+
+        $content = Input::get('content');
+
+        $schedule = Carbon::now()->addHours(3);
+        $last_post = Post::where('user_id', '=', $user_id)
+            ->orderBy('date_time', 'desc')
+            ->first();
+        if(!empty($last_post)){
+
+            $dt = Carbon::parse($last_post->date_time);
+            $schedule = $dt->addHours(3);
+        }
+
+        if(Input::has('network')){
+
+            $post = new Post;
+            $post->user_id = $user_id;
+            $post->content = $content;
+            $post->date_time = $schedule;
+            $post->save();
+            $post_id = $post->id;
+
+            $networks = Input::get('network');
+
+            foreach($networks as $network_id){
+                $post_network = new PostNetwork;
+                $post_network->user_id = $user_id;
+                $post_network->post_id = $post_id;
+                $post_network->network_id = $network_id;
+                $post_network->status = 1;
+                $post_network->save();
+            }
+
+            Queue::later($schedule, 'SendPost@fire', array('post_id' => $post_id));
+        }
+
+        return Redirect::to('/post/new')
+            ->with('message', array('type' => 'success', 'text' => 'Your post was scheduled!'));
+    }
+
+
     public function logout(){
 
         Session::flush();

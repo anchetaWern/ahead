@@ -43,6 +43,16 @@
           <li><a href="/networks">Networks</a></li>
         </ul>
 
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Posts <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="/post/new">New</a></li>
+              <li><a href="/post">List</a></li>
+            </ul>
+          </li>
+        </ul>
+
         <ul class="nav navbar-nav navbar-right">
 
           <li class="dropdown">

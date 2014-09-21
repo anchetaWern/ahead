@@ -48,6 +48,8 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::get('/fb/redirect', 'AdminController@redirectFacebook');
     Route::get('/fb/connect', 'AdminController@connectFacebook');
 
+    Route::get('/post/new', 'AdminController@newPost');
+    Route::post('/post/create', 'AdminController@createPost');
 });
 
 Route::get('/password/forgot', 'RemindersController@getRemind');
