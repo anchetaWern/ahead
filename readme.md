@@ -1,7 +1,3 @@
-The starter site that I use for my Laravel 4 projects. 
+#Ahead
 
-###Features
-
-- signup
-- login/logout
-- admin
+Allows you to schedule posts to your Facebook, Twitter and LinkedIn accounts.
