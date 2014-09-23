@@ -21,9 +21,6 @@ class SendPost {
 
             }
 
-            $filename = basename($post->image_url);
-
-
             $network_ids = PostNetwork::where('post_id', '=', $post_id)->lists('network_id');
 
             $network = Network::where('user_id', '=', $user_id)
