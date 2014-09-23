@@ -346,14 +346,14 @@ class AdminController extends BaseController {
 
         $content = Input::get('content');
 
-        $schedule = Carbon::now()->addHours(3);
+        $schedule = Carbon::now()->addHours(1);
         $last_post = Post::where('user_id', '=', $user_id)
             ->orderBy('date_time', 'desc')
             ->first();
         if(!empty($last_post)){
 
             $dt = Carbon::parse($last_post->date_time);
-            $schedule = $dt->addHours(3);
+            $schedule = $dt->addHours(1);
         }
 
         if(Input::has('network')){
