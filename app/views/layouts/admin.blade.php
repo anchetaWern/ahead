@@ -48,7 +48,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Posts <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="/post/new">New</a></li>
-              <li><a href="/post">List</a></li>
+              <li><a href="/posts">List</a></li>
             </ul>
           </li>
         </ul>

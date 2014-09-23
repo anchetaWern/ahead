@@ -384,6 +384,22 @@ class AdminController extends BaseController {
     }
 
 
+    public function posts(){
+
+        $posts = Post::where('user_id', '=', Auth::user()->id)
+            ->orderBy('date_time', 'DESC')
+            ->paginate(10);
+
+        $page_data = array(
+            'posts' => $posts
+        );
+
+        $this->layout->title = 'Posts';
+        $this->layout->content = View::make('admin.posts', $page_data);
+
+    }
+
+
     public function logout(){
 
         Session::flush();
