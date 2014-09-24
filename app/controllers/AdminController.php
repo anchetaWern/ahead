@@ -319,10 +319,16 @@ class AdminController extends BaseController {
 
     public function newPost(){
 
-        $networks = Network::where('user_id', '=', Auth::user()->id)->get();
+        $user_id = Auth::user()->id;
+
+        $networks = Network::where('user_id', '=', $user_id)->get();
+        $settings = Settings::where('user_id', '=', $user_id)->first();
+
+        $default_networks = json_decode($settings->default_networks);
 
         $page_data = array(
-            'networks' => $networks
+            'networks' => $networks,
+            'default_networks' => $default_networks
         );
         $this->layout->title = 'Schedule New Post';
         $this->layout->content = View::make('admin.new_post', $page_data);

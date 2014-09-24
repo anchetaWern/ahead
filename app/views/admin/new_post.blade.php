@@ -22,7 +22,13 @@
             @foreach($networks as $n)
             <div class="checkbox">
               <label>
-                <input type="checkbox" name="network[]" value="{{ $n->id }}">
+              <?php
+              $checked = '';
+              if(in_array($n->id, $default_networks)){
+                $checked = 'checked';
+              }
+              ?>
+                <input type="checkbox" name="network[]" value="{{ $n->id }}" {{ $checked }}>
                 {{ $n->username }} ({{ $n->network }})
               </label>
             </div>
