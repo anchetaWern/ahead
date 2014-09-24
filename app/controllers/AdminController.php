@@ -400,6 +400,40 @@ class AdminController extends BaseController {
     }
 
 
+    public function settings(){
+
+        $user_id = Auth::user()->id;
+
+        $networks = Network::where('user_id', '=', $user_id)->get();
+        $settings = Settings::where('user_id', '=', $user_id)->first();
+
+        $default_networks = json_decode($settings->default_networks);
+
+        $page_data = array(
+            'networks' => $networks,
+            'default_networks' => $default_networks
+        );
+
+        $this->layout->title = 'Settings';
+        $this->layout->content = View::make('admin.settings', $page_data);
+
+    }
+
+
+    public function updateSettings(){
+
+        $current_settings = Input::get('settings');
+
+        $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
+        $settings->default_networks = json_encode($current_settings);
+        $settings->save();
+
+        return Redirect::to('/settings')
+            ->with('message', array('type' => 'success', 'text' => 'Settings was updated!'));
+
+    }
+
+
     public function logout(){
 
         Session::flush();

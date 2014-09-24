@@ -52,6 +52,9 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::post('/post/create', 'AdminController@createPost');
 
     Route::get('/posts', 'AdminController@posts');
+
+    Route::get('/settings', 'AdminController@settings');
+    Route::post('/settings', 'AdminController@updateSettings');
 });
 
 Route::get('/password/forgot', 'RemindersController@getRemind');
