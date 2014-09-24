@@ -352,12 +352,12 @@ class AdminController extends BaseController {
 
         $content = Input::get('content');
 
+
         $schedule = Carbon::now()->addHours(1);
         $last_post = Post::where('user_id', '=', $user_id)
             ->orderBy('date_time', 'desc')
             ->first();
         if(!empty($last_post)){
-
             $dt = Carbon::parse($last_post->date_time);
             $schedule = $dt->addHours(1);
         }
@@ -397,7 +397,8 @@ class AdminController extends BaseController {
             ->paginate(10);
 
         $page_data = array(
-            'posts' => $posts
+            'posts' => $posts,
+            'post_count' => count($posts)
         );
 
         $this->layout->title = 'Posts';
