@@ -124,6 +124,9 @@ class SendPost {
             }
         }
 
+        $post->published = 1;
+        $post->save();
+
         $job->delete();
 
     }
