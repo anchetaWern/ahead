@@ -46,6 +46,11 @@ class HomeController extends BaseController {
             $user->save();
             $user_id = $user->id;
 
+            $settings = new Settings;
+            $settings->user_id = $user_id;
+            $settings->default_networks = '[]';
+            $settings->save();
+
             return Redirect::to('/login')
                 ->with('message', array('type' => 'success', 'text' => 'You have successfully created your account! You can now login.'));
         }
