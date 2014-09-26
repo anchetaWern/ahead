@@ -362,6 +362,7 @@ class AdminController extends BaseController {
             $schedule = $dt->addHours(1);
         }
 
+
         if(Input::has('network')){
 
             $post = new Post;
@@ -438,6 +439,44 @@ class AdminController extends BaseController {
         return Redirect::to('/settings')
             ->with('message', array('type' => 'success', 'text' => 'Settings was updated!'));
 
+    }
+
+
+    public function newSchedule(){
+
+        $intervals = Interval::get();
+
+        $page_data = array(
+            'intervals' => $intervals
+        );
+
+        $this->layout->title = 'New Schedule';
+        $this->layout->content = View::make('admin.new_schedule', $page_data);
+
+    }
+
+
+    public function createSchedule(){
+
+        $rules = array(
+            'name' => 'required'
+        );
+
+        $validator = Validator::make(Input::all(), $rules);
+
+        if($validator->fails()){
+            return Redirect::to('/schedules/new')
+                ->withErrors($validator);
+        }
+
+        $schedule = new Schedule;
+        $schedule->user_id = Auth::user()->id;
+        $schedule->interval_id = Input::get('interval');
+        $schedule->name = Input::get('name');
+        $schedule->save();
+
+        return Redirect::to('/schedules/new')
+            ->with('message', array('type' => 'success', 'text' => 'Schedule was created!'));
     }
 
 
