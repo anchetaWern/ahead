@@ -480,6 +480,24 @@ class AdminController extends BaseController {
     }
 
 
+    public function schedules(){
+
+        $schedules = DB::table('schedules')
+            ->join('intervals', 'schedules.interval_id', '=', 'intervals.id')
+            ->select('schedules.name AS schedule_name', 'intervals.name AS interval_name')
+            ->where('schedules.user_id', '=', Auth::user()->id)
+            ->paginate(10);
+
+        $page_data = array(
+            'schedules' => $schedules
+        );
+
+        $this->layout->title = 'Schedules';
+        $this->layout->content = View::make('admin.schedules', $page_data);
+
+    }
+
+
     public function logout(){
 
         Session::flush();

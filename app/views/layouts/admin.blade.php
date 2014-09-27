@@ -55,6 +55,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Schedules <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a href="/schedules/new">New</a></li>
+              <li><a href="/schedules">List</a></li>
             </ul>
           </li>
         </ul>
