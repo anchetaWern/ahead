@@ -415,11 +415,15 @@ class AdminController extends BaseController {
         $networks = Network::where('user_id', '=', $user_id)->get();
         $settings = Settings::where('user_id', '=', $user_id)->first();
 
+        $schedules = Schedule::where('user_id', '=', $user_id)->get();
+
         $default_networks = json_decode($settings->default_networks);
 
         $page_data = array(
             'networks' => $networks,
-            'default_networks' => $default_networks
+            'default_networks' => $default_networks,
+            'default_schedule' => $settings->schedule_id,
+            'schedules' => $schedules
         );
 
         $this->layout->title = 'Settings';
@@ -434,6 +438,7 @@ class AdminController extends BaseController {
 
         $settings = Settings::where('user_id', '=', Auth::user()->id)->first();
         $settings->default_networks = json_encode($current_settings);
+        $settings->schedule_id = Input::get('schedule');
         $settings->save();
 
         return Redirect::to('/settings')
