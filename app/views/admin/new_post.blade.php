@@ -38,6 +38,26 @@
         </div>
 
         <div class="form-group">
+          <label for="schedule" class="col-lg-2 conntrol-label">Schedule</label>
+          <div class="col-lg-10">
+            @foreach($schedules as $s)
+            <div class="radio">
+              <label>
+              <?php
+              $schedule_checked = '';
+              if($s->id == $default_schedule){
+                $schedule_checked = 'checked';
+              }
+              ?>
+                <input type="radio" name="schedule" id="schedule_{{ $s->id }}" value="{{ $s->id }}" {{ $schedule_checked }}>
+                {{ $s->name }}
+              </label>
+            </div>
+            @endforeach
+          </div>
+        </div>
+
+        <div class="form-group">
           <div class="col-lg-10 col-lg-offset-2">
             <button type="submit" class="btn btn-primary">Schedule</button>
           </div>

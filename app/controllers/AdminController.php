@@ -325,10 +325,13 @@ class AdminController extends BaseController {
         $settings = Settings::where('user_id', '=', $user_id)->first();
 
         $default_networks = json_decode($settings->default_networks);
+        $schedules = Schedule::where('user_id', '=', $user_id)->get();
 
         $page_data = array(
             'networks' => $networks,
-            'default_networks' => $default_networks
+            'default_networks' => $default_networks,
+            'default_schedule' => $settings->schedule_id,
+            'schedules' => $schedules
         );
         $this->layout->title = 'Schedule New Post';
         $this->layout->content = View::make('admin.new_post', $page_data);
@@ -340,7 +343,8 @@ class AdminController extends BaseController {
         $user_id = Auth::user()->id;
 
         $rules = array(
-            'content' => 'required'
+            'content' => 'required',
+            'schedule' => 'required'
         );
 
         $validator = Validator::make(Input::all(), $rules);
@@ -352,14 +356,45 @@ class AdminController extends BaseController {
 
         $content = Input::get('content');
 
+        $schedule_id = Settings::where('user_id', '=', $user_id)->pluck('schedule_id');
+        $current_datetime = Carbon::now();
 
-        $schedule = Carbon::now()->addHours(1);
+        if(!empty($schedule_id)){
+            $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
+            $interval = Interval::find($interval_id);
+
+            if($interval->rule == 'add'){
+               $schedule = $current_datetime->addHours($interval->hours);
+            }else if($interval->rule == 'random'){
+
+                $current_day = date('d');
+                $days_to_add = $interval->hours / 24;
+
+                $day = mt_rand($current_day, $current_day + $days_to_add);
+                $hour = mt_rand(1, 23);
+                $minute = mt_rand(0, 59);
+                $second = mt_rand(0, 59);
+
+                //year, month and timezone is null
+                $schedule = Carbon::create(null, null, $day, $hour, $minute, $second, null);
+            }
+        }
+
         $last_post = Post::where('user_id', '=', $user_id)
             ->orderBy('date_time', 'desc')
             ->first();
         if(!empty($last_post)){
-            $dt = Carbon::parse($last_post->date_time);
-            $schedule = $dt->addHours(1);
+            $new_datetime = Carbon::parse($last_post->date_time);
+            if($interval->rule == 'add'){
+                $new_schedule = $new_datetime->addHours($interval->hours);
+                if($new_schedule->gt($schedule)){
+                    $schedule = $new_schedule;
+                }
+            }
+        }
+
+        if(empty($schedule)){
+            $schedule = $current_datetime->addHours(1);
         }
 
 
