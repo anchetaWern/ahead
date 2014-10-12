@@ -538,6 +538,101 @@ class AdminController extends BaseController {
     }
 
 
+    public function editPost($post_id){
+
+        $user_id = Auth::user()->id;
+
+        $post = Post::where('user_id', '=', $user_id)
+            ->where('id', '=', $post_id)
+            ->first();
+
+        $networks = Network::where('user_id', '=', $user_id)->get();
+        $settings = Settings::where('user_id', '=', $user_id)->first();
+
+        $selected_networks = PostNetwork::where('post_id', $post_id)
+            ->where('status', '=', 1)
+            ->lists('network_id');
+
+        $page_data = array(
+            'post_id' => $post_id,
+            'post' => $post,
+            'networks' => $networks,
+            'selected_networks' => $selected_networks
+        );
+
+        $this->layout->title = 'Edit Post';
+        $this->layout->content = View::make('admin.edit_post', $page_data);
+    }
+
+
+    public function updatePost(){
+
+        $user_id = Auth::user()->id;
+
+        $rules = array(
+            'content' => 'required'
+        );
+
+        $validator = Validator::make(Input::all(), $rules);
+
+        $post_id = Input::get('post_id');
+
+        if($validator->fails()){
+            return Redirect::back()
+                ->withErrors($validator);
+        }
+
+        if(Input::has('network')){
+
+            $content = Input::get('content');
+
+            $post = Post::where('user_id', '=', $user_id)
+                ->where('id', '=', $post_id)
+                ->first();
+            $post->content = $content;
+            $post->save();
+
+            $networks = Input::get('network');
+
+            $post_networks = PostNetwork::where('post_id', '=', $post_id)
+                ->lists('network_id');
+
+            foreach($post_networks as $network_id){
+                if(!in_array($network_id, $networks)){
+                    $post_network = PostNetwork::where('network_id', '=', $network_id)
+                        ->where('post_id', '=', $post_id)
+                        ->first();
+                    if(!empty($post_network)){
+                        $post_network->status = 0;
+                        $post_network->save();
+                    }
+                }
+            }
+
+            foreach($networks as $network_id){
+                $post_network = PostNetwork::where('network_id', '=', $network_id)
+                    ->where('post_id', '=', $post_id)
+                    ->first();
+                if(!empty($post_network)){
+                    $post_network->status = 1;
+                    $post_network->save();
+                }else{
+                    $post_network = new PostNetwork;
+                    $post_network->user_id = $user_id;
+                    $post_network->post_id = $post_id;
+                    $post_network->network_id = $network_id;
+                    $post_network->status = 1;
+                    $post_network->save();
+                }
+            }
+        }
+
+        return Redirect::back()
+            ->with('message', array('type' => 'success', 'text' => 'Post was updated!'));
+
+    }
+
+
     public function logout(){
 
         Session::flush();

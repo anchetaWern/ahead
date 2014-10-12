@@ -60,6 +60,9 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::post('/schedules/create', 'AdminController@createSchedule');
 
     Route::get('/schedules', 'AdminController@schedules');
+
+    Route::get('/posts/{id}/edit', 'AdminController@editPost');
+    Route::post('/posts', 'AdminController@updatePost');
 });
 
 Route::get('/password/forgot', 'RemindersController@getRemind');

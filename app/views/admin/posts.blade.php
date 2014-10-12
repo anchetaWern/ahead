@@ -14,6 +14,7 @@
           <th>Content</th>
           <th>Time</th>
           <th>Published</th>
+          <th>Edit</th>
         </tr>
       </thead>
       <tbody>
@@ -29,6 +30,9 @@
           }
           ?>
           {{ $published }}
+          </td>
+          <td>
+            <a href="/posts/{{ $p->id }}/edit">edit</a>
           </td>
         </tr>
       @endforeach
