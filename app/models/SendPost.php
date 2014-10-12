@@ -102,12 +102,17 @@ class SendPost {
 
                         try{
 
+                            $post_data = array(
+                                'access_token' => $s->user_token,
+                                'message' => $post->content
+                            );
+
+                            if(!empty($post_url)){
+                                $post_data['link'] = $post_url;
+                            }
+
                             $res = $client->post('https://graph.facebook.com/me/feed', array(
-                                'query' =>  array(
-                                    'access_token' => $s->user_token,
-                                    'message' => $post->content,
-                                    'link' => $post_url
-                                )
+                                'query' => $post_data
                             ));
 
                             $response_body = $res->getBody();
