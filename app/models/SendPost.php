@@ -17,7 +17,7 @@ class SendPost {
             if(!empty($url_matches)){
 
                 $all_urls = $url_matches[0];
-                $post_url = $all_urls[0];
+                $post_url = (!empty($all_urls[0])) ? $all_urls[0] : '';
 
             }
 
