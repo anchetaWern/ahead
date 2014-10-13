@@ -334,6 +334,7 @@ class AdminController extends BaseController {
             'schedules' => $schedules
         );
         $this->layout->title = 'Schedule New Post';
+        $this->layout->new_post = true;
         $this->layout->content = View::make('admin.new_post', $page_data);
     }
 
@@ -355,48 +356,52 @@ class AdminController extends BaseController {
         }
 
         $content = Input::get('content');
+        $post_now = Input::get('post_now');
 
         $schedule_id = Settings::where('user_id', '=', $user_id)->pluck('schedule_id');
         $current_datetime = Carbon::now();
 
-        if(!empty($schedule_id)){
-            $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
-            $interval = Interval::find($interval_id);
+        $schedule = Carbon::now();
 
-            if($interval->rule == 'add'){
-               $schedule = $current_datetime->addHours($interval->hours);
-            }else if($interval->rule == 'random'){
+        if($post_now == '0'){
+            if(!empty($schedule_id)){
+                $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
+                $interval = Interval::find($interval_id);
 
-                $current_day = date('d');
-                $days_to_add = $interval->hours / 24;
+                if($interval->rule == 'add'){
+                   $schedule = $current_datetime->addHours($interval->hours);
+                }else if($interval->rule == 'random'){
 
-                $day = mt_rand($current_day, $current_day + $days_to_add);
-                $hour = mt_rand(1, 23);
-                $minute = mt_rand(0, 59);
-                $second = mt_rand(0, 59);
+                    $current_day = date('d');
+                    $days_to_add = $interval->hours / 24;
 
-                //year, month and timezone is null
-                $schedule = Carbon::create(null, null, $day, $hour, $minute, $second, null);
-            }
-        }
+                    $day = mt_rand($current_day, $current_day + $days_to_add);
+                    $hour = mt_rand(1, 23);
+                    $minute = mt_rand(0, 59);
+                    $second = mt_rand(0, 59);
 
-        $last_post = Post::where('user_id', '=', $user_id)
-            ->orderBy('date_time', 'desc')
-            ->first();
-        if(!empty($last_post)){
-            $new_datetime = Carbon::parse($last_post->date_time);
-            if($interval->rule == 'add'){
-                $new_schedule = $new_datetime->addHours($interval->hours);
-                if($new_schedule->gt($schedule)){
-                    $schedule = $new_schedule;
+                    //year, month and timezone is null
+                    $schedule = Carbon::create(null, null, $day, $hour, $minute, $second, null);
                 }
             }
-        }
 
-        if(empty($schedule)){
-            $schedule = $current_datetime->addHours(1);
-        }
+            $last_post = Post::where('user_id', '=', $user_id)
+                ->orderBy('date_time', 'desc')
+                ->first();
+            if(!empty($last_post)){
+                $new_datetime = Carbon::parse($last_post->date_time);
+                if($interval->rule == 'add'){
+                    $new_schedule = $new_datetime->addHours($interval->hours);
+                    if($new_schedule->gt($schedule)){
+                        $schedule = $new_schedule;
+                    }
+                }
+            }
 
+            if(empty($schedule)){
+                $schedule = $current_datetime->addHours(1);
+            }
+        }
 
         if(Input::has('network')){
 

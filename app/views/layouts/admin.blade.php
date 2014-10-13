@@ -84,5 +84,9 @@
 
   <script src="{{ asset('assets/js/jquery.js') }}"></script>
   <script src="{{ asset('assets/lib/lumen/js/bootstrap.js') }}"></script>
+
+  @if(!empty($new_post))
+  <script src="{{ asset('assets/js/new_post.js') }}"></script>
+  @endif
 </body>
 </html>

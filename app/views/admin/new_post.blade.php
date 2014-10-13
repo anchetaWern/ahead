@@ -6,9 +6,10 @@
 </div>
 <div class="row">
   <div class="col-md-5">
-    <form class="form-horizontal" method="POST" action="/post/create">
+    <form class="form-horizontal" id="form_newpost" method="POST" action="/post/create">
       <fieldset>
         <legend>Schedule New Post</legend>
+        <input type="hidden" name="post_now" id="post_now" value="0">
         <div class="form-group">
           <label for="content" class="col-lg-2 control-label">Content</label>
           <div class="col-lg-10">
@@ -59,7 +60,18 @@
 
         <div class="form-group">
           <div class="col-lg-10 col-lg-offset-2">
-            <button type="submit" class="btn btn-primary">Schedule</button>
+
+            <div class="btn-group">
+              <button type="submit" class="btn btn-primary">Schedule</button>
+              <button type="submit" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#" id="btn-postnow">Post Now</a></li>
+              </ul>
+            </div>
+
           </div>
         </div>
       </fieldset>
