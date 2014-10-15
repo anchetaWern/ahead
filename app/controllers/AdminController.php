@@ -74,7 +74,7 @@ class AdminController extends BaseController {
         $verifier = Input::get('oauth_verifier');
         $accessToken = Twitter::oAuthAccessToken($token, $verifier);
 
-        $user_id = Auth::user()->id;
+
 
         if(!empty($accessToken)){
             $user_token = $accessToken['oauth_token'];
@@ -82,29 +82,55 @@ class AdminController extends BaseController {
             $twitter_id = $accessToken['user_id'];
             $screen_name = $accessToken['screen_name'];
 
+
             $network_type = 'twitter';
 
-            $network = Network::where('user_id', '=', $user_id)
-                ->where('network', '=', $network_type)
-                ->where('network_id', '=', $twitter_id)
-                ->first();
+            if(!Auth::check()){
 
-            if(!empty($network)){
+                $user = User::where('social_id', '=', $twitter_id)->where('type', '=', 'twitter')->first();
+                if(empty($user)){
+                    $user = new User;
+                    $user->username = $screen_name;
+                    $user->email = '';
+                    $user->type = $network_type;
+                    $user->social_id = $twitter_id;
+                    $user->save();
 
-                $network->user_token = $user_token;
-                $network->user_secret = $user_secret;
-                $network->save();
+                    $settings = new Settings;
+                    $settings->user_id = $user->id;
+                    $settings->default_networks = '[]';
+                    $settings->save();
+                }
 
-            }else{
+                Auth::loginUsingId($user->id);
+            }
 
-                $network = new Network;
-                $network->user_id = $user_id;
-                $network->network = $network_type;
-                $network->user_token = $user_token;
-                $network->user_secret = $user_secret;
-                $network->network_id = $twitter_id;
-                $network->username = $screen_name;
-                $network->save();
+
+            if(Auth::check()){
+                $user_id = Auth::user()->id;
+
+                $network = Network::where('user_id', '=', $user_id)
+                    ->where('network', '=', $network_type)
+                    ->where('network_id', '=', $twitter_id)
+                    ->first();
+
+                if(!empty($network)){
+
+                    $network->user_token = $user_token;
+                    $network->user_secret = $user_secret;
+                    $network->save();
+
+                }else{
+
+                    $network = new Network;
+                    $network->user_id = $user_id;
+                    $network->network = $network_type;
+                    $network->user_token = $user_token;
+                    $network->user_secret = $user_secret;
+                    $network->network_id = $twitter_id;
+                    $network->username = $screen_name;
+                    $network->save();
+                }
             }
 
             return Redirect::to('/networks')
@@ -127,7 +153,6 @@ class AdminController extends BaseController {
 
         if(Input::has('code')){
 
-            $user_id = Auth::user()->id;
             $network_type = 'linkedin';
 
             $provider = new Linkedin(Config::get('social.linkedin'));
@@ -153,30 +178,57 @@ class AdminController extends BaseController {
                 $linkedin_id = $user_data['id'];
                 $user_name = $user_data['firstName'] . ' ' . $user_data['lastName'];
 
-                $network = Network::where('user_id', '=', $user_id)
-                    ->where('network', '=', $network_type)
-                    ->where('network_id', '=', $linkedin_id)
-                    ->first();
+                if(!Auth::check()){
 
-                if(!empty($network)){
+                    $user = User::where('social_id', '=', $linkedin_id)->where('type', '=', 'linkedin')->first();
+                    if(empty($user)){
+                        $user = new User;
+                        $user->username = $user_name;
+                        $user->email = '';
+                        $user->type = $network_type;
+                        $user->social_id = $linkedin_id;
+                        $user->save();
 
-                    $network->user_token = $access_token;
-                    $network->save();
+                        $settings = new Settings;
+                        $settings->user_id = $user->id;
+                        $settings->default_networks = '[]';
+                        $settings->save();
+                    }
 
-                }else{
-                    $network = new Network;
-                    $network->user_id = $user_id;
-                    $network->network = $network_type;
-                    $network->user_token = $access_token;
-                    $network->user_secret = '';
-                    $network->network_id = $linkedin_id;
-                    $network->username = $user_name;
-                    $network->save();
+                    Auth::loginUsingId($user->id);
+
                 }
 
 
-                return Redirect::to('/networks')
-                    ->with('message', array('type' => 'success', 'text' => 'You have successfully connected your Linkedin account!'));
+                if(Auth::check()){
+
+                    $user_id = Auth::user()->id;
+
+                    $network = Network::where('user_id', '=', $user_id)
+                        ->where('network', '=', $network_type)
+                        ->where('network_id', '=', $linkedin_id)
+                        ->first();
+
+                    if(!empty($network)){
+
+                        $network->user_token = $access_token;
+                        $network->save();
+
+                    }else{
+                        $network = new Network;
+                        $network->user_id = $user_id;
+                        $network->network = $network_type;
+                        $network->user_token = $access_token;
+                        $network->user_secret = '';
+                        $network->network_id = $linkedin_id;
+                        $network->username = $user_name;
+                        $network->save();
+                    }
+
+
+                    return Redirect::to('/networks')
+                        ->with('message', array('type' => 'success', 'text' => 'You have successfully connected your Linkedin account!'));
+                }
 
 
             }catch(Exception $e){
@@ -207,7 +259,7 @@ class AdminController extends BaseController {
 
         try{
 
-            $user_id = Auth::user()->id;
+            $network_type = 'facebook';
 
             $token = $provider->getAccessToken('authorizationCode', array('code' => Input::get('code')));
             $access_token = $token->accessToken;
@@ -223,88 +275,112 @@ class AdminController extends BaseController {
             $response_body = $res->getBody();
             $response_body = json_decode($response_body, true);
 
+            $email = $response_body['email'];
             $id = $response_body['id'];
             $name = $response_body['name'];
 
+            if(!Auth::check()){
 
-            $res = $client->get('https://graph.facebook.com/oauth/access_token', array(
-                'query' =>  array(
-                    'grant_type' => 'fb_exchange_token',
-                    'client_id' => Config::get('social.facebook.clientId'),
-                    'client_secret' => Config::get('social.facebook.clientSecret'),
-                    'fb_exchange_token' => $access_token
-                )
-            ));
+                $user = User::where('social_id', '=', $id)->where('type', '=', 'facebook')->first();
+                if(empty($user)){
+                    $user = new User;
+                    $user->username = $name;
+                    $user->email = $email;
+                    $user->type = $network_type;
+                    $user->social_id = $id;
+                    $user->save();
 
-            $extended_accesstoken_response_body = $res->getBody();
-            $extended_accesstoken = str_replace('access_token=', '', $extended_accesstoken_response_body);
-            $extended_accesstoken = preg_replace('/&expires\=[0-9]*/', '', $extended_accesstoken);
+                    $settings = new Settings;
+                    $settings->user_id = $user->id;
+                    $settings->default_networks = '[]';
+                    $settings->save();
+                }
 
-            $network_type = 'facebook';
+                Auth::loginUsingId($user->id);
 
-            $network = Network::where('user_id', '=', $user_id)
-                ->where('network', '=', $network_type)
-                ->where('network_id', '=', $id)
-                ->first();
-
-            if(!empty($network)){
-                $network->user_token = $extended_accesstoken;
-                $network->save();
-            }else{
-                $network = new Network;
-                $network->user_id = $user_id;
-                $network->network = $network_type;
-                $network->user_token = $extended_accesstoken;
-                $network->network_id = $id;
-                $network->username = $name;
-                $network->save();
             }
 
-            //get pages
-            $res = $client->get('https://graph.facebook.com/me/accounts', array(
-                'query' => array(
-                    'access_token' => $extended_accesstoken
+
+            if(Auth::check()){
+
+                $res = $client->get('https://graph.facebook.com/oauth/access_token', array(
+                    'query' =>  array(
+                        'grant_type' => 'fb_exchange_token',
+                        'client_id' => Config::get('social.facebook.clientId'),
+                        'client_secret' => Config::get('social.facebook.clientSecret'),
+                        'fb_exchange_token' => $access_token
                     )
                 ));
-            $response_body = $res->getBody();
-            $pages = json_decode($response_body, true);
 
-            if(!empty($pages['data'])){
-                foreach($pages['data'] as $page){
+                $extended_accesstoken_response_body = $res->getBody();
+                $extended_accesstoken = str_replace('access_token=', '', $extended_accesstoken_response_body);
+                $extended_accesstoken = preg_replace('/&expires\=[0-9]*/', '', $extended_accesstoken);
 
-                    if(in_array('CREATE_CONTENT', $page['perms'])){
+                $user_id = Auth::user()->id;
 
-                        $page_id = $page['id'];
-                        $page_name = $page['name'];
-                        $page_accesstoken = $page['access_token'];
+                $network = Network::where('user_id', '=', $user_id)
+                    ->where('network', '=', $network_type)
+                    ->where('network_id', '=', $id)
+                    ->first();
 
-                        $network = Network::where('user_id', '=', $user_id)
-                            ->where('network', '=', $network_type)
-                            ->where('network_id', '=', $page_id)
-                            ->first();
+                if(!empty($network)){
+                    $network->user_token = $extended_accesstoken;
+                    $network->save();
+                }else{
+                    $network = new Network;
+                    $network->user_id = $user_id;
+                    $network->network = $network_type;
+                    $network->user_token = $extended_accesstoken;
+                    $network->network_id = $id;
+                    $network->username = $name;
+                    $network->save();
+                }
 
-                        if(!empty($network)){
-                            $network->user_token = $page_accesstoken;
-                            $network->save();
-                        }else{
-                            $network = new Network;
-                            $network->user_id = $user_id;
-                            $network->network = $network_type;
-                            $network->user_token = $page_accesstoken;
-                            $network->network_id = $page_id;
-                            $network->username = $page_name;
-                            $network->save();
+                //get pages
+                $res = $client->get('https://graph.facebook.com/me/accounts', array(
+                    'query' => array(
+                        'access_token' => $extended_accesstoken
+                        )
+                    ));
+                $response_body = $res->getBody();
+                $pages = json_decode($response_body, true);
+
+                if(!empty($pages['data'])){
+                    foreach($pages['data'] as $page){
+
+                        if(in_array('CREATE_CONTENT', $page['perms'])){
+
+                            $page_id = $page['id'];
+                            $page_name = $page['name'];
+                            $page_accesstoken = $page['access_token'];
+
+                            $network = Network::where('user_id', '=', $user_id)
+                                ->where('network', '=', $network_type)
+                                ->where('network_id', '=', $page_id)
+                                ->first();
+
+                            if(!empty($network)){
+                                $network->user_token = $page_accesstoken;
+                                $network->save();
+                            }else{
+                                $network = new Network;
+                                $network->user_id = $user_id;
+                                $network->network = $network_type;
+                                $network->user_token = $page_accesstoken;
+                                $network->network_id = $page_id;
+                                $network->username = $page_name;
+                                $network->save();
+                            }
+
                         }
 
                     }
-
                 }
+
+
+                return Redirect::to('/networks')
+                    ->with('message', array('type' => 'success', 'text' => 'You have successfully connected your Facebook account!'));
             }
-
-
-
-            return Redirect::to('/networks')
-                ->with('message', array('type' => 'success', 'text' => 'You have successfully connected your Facebook account!'));
 
 
         }catch(Exception $e){

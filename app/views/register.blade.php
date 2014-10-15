@@ -35,5 +35,18 @@
       </fieldset>
     </form>
   </div>
+  <div class="col-md-5">
+    <ul id="social-login">
+      <li>
+        <a href="/twitter/redirect" class="btn btn-info btn-block"><i class="fa fa-twitter"></i> Signup with Twitter</a>
+      </li>
+      <li>
+        <a href="/fb/redirect" class="btn btn-primary btn-block"><i class="fa fa-facebook"></i> Signup with Facebook</a>
+      </li>
+      <li>
+        <a href="/linkedin/redirect" class="btn btn-default btn-block"><i class="fa fa-linkedin"></i> Signup with LinkedIn</a>
+      </li>
+    </ul>
+  </div>
 </div>
 @stop
