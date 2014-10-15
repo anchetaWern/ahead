@@ -30,7 +30,7 @@ Route::post('/register', 'HomeController@doRegister');
 
 Route::get('/logout', 'AdminController@logout');
 
-Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
+Route::group(array('after' => 'nocache'), function(){
 
     Route::get('/admin', 'AdminController@index');
 
