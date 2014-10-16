@@ -33,20 +33,17 @@ class SocialController extends BaseController {
 
                 $user = User::where('social_id', '=', $twitter_id)->where('type', '=', 'twitter')->first();
                 if(empty($user)){
-                    $user = new User;
-                    $user->username = $screen_name;
-                    $user->email = '';
-                    $user->type = $network_type;
-                    $user->social_id = $twitter_id;
-                    $user->save();
 
-                    $settings = new Settings;
-                    $settings->user_id = $user->id;
-                    $settings->default_networks = '[]';
-                    $settings->save();
+                    $user['inputs'] = array(
+                        'username' => $screen_name,
+                        'email' => '',
+                        'type' => $network_type,
+                        'social_id' => $twitter_id
+                    );
+
+                    Event::fire('user.create', array($user));
                 }
 
-                Auth::loginUsingId($user->id);
             }
 
 
@@ -126,20 +123,16 @@ class SocialController extends BaseController {
 
                     $user = User::where('social_id', '=', $linkedin_id)->where('type', '=', 'linkedin')->first();
                     if(empty($user)){
-                        $user = new User;
-                        $user->username = $user_name;
-                        $user->email = '';
-                        $user->type = $network_type;
-                        $user->social_id = $linkedin_id;
-                        $user->save();
 
-                        $settings = new Settings;
-                        $settings->user_id = $user->id;
-                        $settings->default_networks = '[]';
-                        $settings->save();
+                        $user['inputs'] = array(
+                            'username' => $user_name,
+                            'email' => '',
+                            'type' => $network_type,
+                            'social_id' => $linkedin_id
+                        );
+
+                        Event::fire('user.create', array($user));
                     }
-
-                    Auth::loginUsingId($user->id);
 
                 }
 
@@ -227,21 +220,17 @@ class SocialController extends BaseController {
 
                 $user = User::where('social_id', '=', $id)->where('type', '=', 'facebook')->first();
                 if(empty($user)){
-                    $user = new User;
-                    $user->username = $name;
-                    $user->email = $email;
-                    $user->type = $network_type;
-                    $user->social_id = $id;
-                    $user->save();
 
-                    $settings = new Settings;
-                    $settings->user_id = $user->id;
-                    $settings->default_networks = '[]';
-                    $settings->save();
+                    $user['inputs'] = array(
+                        'username' => $name,
+                        'email' => $email,
+                        'type' => $network_type,
+                        'social_id' => $id
+                    );
+
+                    Event::fire('user.create', array($user));
+
                 }
-
-                Auth::loginUsingId($user->id);
-
             }
 
 

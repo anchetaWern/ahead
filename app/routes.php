@@ -36,9 +36,6 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
 
     Route::get('/networks', 'AdminController@networks');
 
-    Route::get('/fb/redirect', 'SocialController@redirectFacebook');
-    Route::get('/fb/connect', 'SocialController@connectFacebook');
-
     Route::get('/account', 'AccountController@account');
     Route::post('/account', 'AccountController@updateAccount');
 
@@ -58,6 +55,9 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::get('/posts/{id}/edit', 'PostController@editPost');
     Route::post('/posts', 'PostController@updatePost');
 });
+
+Route::get('/fb/redirect', 'SocialController@redirectFacebook');
+Route::get('/fb/connect', 'SocialController@connectFacebook');
 
 Route::get('/twitter/redirect', 'SocialController@redirectTwitter');
 Route::get('/twitter/connect', 'SocialController@connectTwitter');

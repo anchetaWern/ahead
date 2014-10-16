@@ -35,21 +35,10 @@ class HomeController extends BaseController {
                 ->withInput(Input::except('password'));
         }else{
 
-            $username = Input::get('username');
-            $email = Input::get('email');
-            $password = Input::get('password');
-
-            $user = new User;
-            $user->username = $username;
-            $user->email = $email;
-            $user->password = Hash::make($password);
-            $user->save();
-            $user_id = $user->id;
-
-            $settings = new Settings;
-            $settings->user_id = $user_id;
-            $settings->default_networks = '[]';
-            $settings->save();
+            $user['inputs'] = Input::all();
+            $user['inputs']['type'] = 'email';
+            $user['inputs']['social_id'] = '';
+            Event::fire('user.create', array($user));
 
             return Redirect::to('/login')
                 ->with('message', array('type' => 'success', 'text' => 'You have successfully created your account! You can now login.'));
