@@ -18,6 +18,18 @@ Event::listen('user.create', function($param){
     $settings->user_id = $user_id;
     $settings->default_networks = '[]';
     $settings->save();
+    $settings_id = $settings->id;
+
+    $schedule = new Schedule;
+    $schedule->user_id = $user_id;
+    $schedule->interval_id = 1;
+    $schedule->name = 'Every 1 hour';
+    $schedule->save();
+    $schedule_id = $schedule->id;
+
+    $settings = Settings::find($settings_id);
+    $settings->schedule_id = $schedule_id;
+    $settings->save();
 
     Auth::loginUsingId($user->id);
 
