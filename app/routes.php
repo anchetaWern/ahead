@@ -30,40 +30,40 @@ Route::post('/register', 'HomeController@doRegister');
 
 Route::get('/logout', 'AdminController@logout');
 
-Route::group(array('after' => 'nocache'), function(){
+Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
 
     Route::get('/admin', 'AdminController@index');
 
-    Route::get('/account', 'AdminController@account');
-    Route::post('/account', 'AdminController@updateAccount');
-
     Route::get('/networks', 'AdminController@networks');
 
-    Route::get('/twitter/redirect', 'AdminController@redirectTwitter');
-    Route::get('/twitter/connect', 'AdminController@connectTwitter');
+    Route::get('/fb/redirect', 'SocialController@redirectFacebook');
+    Route::get('/fb/connect', 'SocialController@connectFacebook');
 
-    Route::get('/linkedin/redirect', 'AdminController@redirectLinkedin');
-    Route::get('/linkedin/connect', 'AdminController@connectLinkedin');
+    Route::get('/account', 'AccountController@account');
+    Route::post('/account', 'AccountController@updateAccount');
 
-    Route::get('/fb/redirect', 'AdminController@redirectFacebook');
-    Route::get('/fb/connect', 'AdminController@connectFacebook');
+    Route::get('/settings', 'SettingsController@settings');
+    Route::post('/settings', 'SettingsController@updateSettings');
 
-    Route::get('/post/new', 'AdminController@newPost');
-    Route::post('/post/create', 'AdminController@createPost');
+    Route::get('/schedules/new', 'SettingsController@newSchedule');
+    Route::post('/schedules/create', 'SettingsController@createSchedule');
 
-    Route::get('/posts', 'AdminController@posts');
+    Route::get('/schedules', 'SettingsController@schedules');
 
-    Route::get('/settings', 'AdminController@settings');
-    Route::post('/settings', 'AdminController@updateSettings');
 
-    Route::get('/schedules/new', 'AdminController@newSchedule');
-    Route::post('/schedules/create', 'AdminController@createSchedule');
+    Route::get('/post/new', 'PostController@newPost');
+    Route::post('/post/create', 'PostController@createPost');
 
-    Route::get('/schedules', 'AdminController@schedules');
-
-    Route::get('/posts/{id}/edit', 'AdminController@editPost');
-    Route::post('/posts', 'AdminController@updatePost');
+    Route::get('/posts', 'PostController@posts');
+    Route::get('/posts/{id}/edit', 'PostController@editPost');
+    Route::post('/posts', 'PostController@updatePost');
 });
+
+Route::get('/twitter/redirect', 'SocialController@redirectTwitter');
+Route::get('/twitter/connect', 'SocialController@connectTwitter');
+
+Route::get('/linkedin/redirect', 'SocialController@redirectLinkedin');
+Route::get('/linkedin/connect', 'SocialController@connectLinkedin');
 
 Route::get('/password/forgot', 'RemindersController@getRemind');
 Route::post('/password/remind', 'RemindersController@postRemind');
