@@ -212,9 +212,9 @@ class SocialController extends BaseController {
             $response_body = $res->getBody();
             $response_body = json_decode($response_body, true);
 
-            $email = $response_body['email'];
             $id = $response_body['id'];
             $name = $response_body['name'];
+
 
             if(!Auth::check()){
 
@@ -223,7 +223,7 @@ class SocialController extends BaseController {
 
                     $user['inputs'] = array(
                         'username' => $name,
-                        'email' => $email,
+                        'email' => '',
                         'type' => $network_type,
                         'social_id' => $id
                     );
