@@ -6,6 +6,7 @@
 </div>
 <div class="row">
   <div class="col-md-5">
+    @if(count($networks) > 0)
     <form class="form-horizontal" id="form_newpost" method="POST" action="/post/create">
       <fieldset>
         <legend>Schedule New Post</legend>
@@ -76,6 +77,11 @@
         </div>
       </fieldset>
     </form>
+    @else
+    <div class="alert alert-info">
+      Connect at least <a href="/networks">one network</a> to your account first.
+    </div>
+    @endif
   </div>
 </div>
 @stop
