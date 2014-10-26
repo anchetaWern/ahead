@@ -17,6 +17,7 @@ Event::listen('user.create', function($param){
     $settings = new Settings;
     $settings->user_id = $user_id;
     $settings->default_networks = '[]';
+    $settings->api_key = Str::random(25);
     $settings->save();
     $settings_id = $settings->id;
 

@@ -9,6 +9,14 @@
     <form class="form-horizontal" method="POST" action="/settings">
       <fieldset>
         <legend>Settings</legend>
+
+        <div class="form-group">
+          <label for="api_key" class="col-lg-2 control-label">API Key</label>
+          <div class="col-lg-10">
+            <input type="text" id="api_key" name="api_key" class="form-control" value="{{ $api_key }}" readonly>
+          </div>
+        </div>
+
         <div class="form-group">
           <label for="content" class="col-lg-2 control-label">Default Accounts</label>
           <div class="col-lg-10">

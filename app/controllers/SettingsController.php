@@ -20,7 +20,8 @@ class SettingsController extends BaseController {
             'networks' => $networks,
             'default_networks' => $default_networks,
             'default_schedule' => $settings->schedule_id,
-            'schedules' => $schedules
+            'schedules' => $schedules,
+            'api_key' => $settings->api_key
         );
 
         $this->layout->title = 'Settings';
