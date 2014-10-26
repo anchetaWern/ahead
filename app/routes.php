@@ -70,3 +70,5 @@ Route::post('/password/remind', 'RemindersController@postRemind');
 
 Route::get('/password/reset/{token}', 'RemindersController@getReset');
 Route::post('/password/reset', 'RemindersController@postReset');
+
+Route::post('/api/post', 'ApiController@post');
