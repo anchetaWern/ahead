@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="{{ asset('assets/lib/lumen/css/bootstrap.css') }}">
   <link href="{{ asset('assets/lib/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+  @if(!empty($new_post))
+  <link rel="stylesheet" href="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}">
+  @endif
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -86,6 +89,8 @@
   <script src="{{ asset('assets/lib/lumen/js/bootstrap.js') }}"></script>
 
   @if(!empty($new_post))
+  <script src="{{ asset('assets/js/moment.min.js') }}"></script>
+  <script src="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
   <script src="{{ asset('assets/js/new_post.js') }}"></script>
   @endif
 </body>

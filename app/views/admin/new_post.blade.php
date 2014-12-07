@@ -40,8 +40,15 @@
         </div>
 
         <div class="form-group">
-          <label for="schedule" class="col-lg-2 conntrol-label">Schedule</label>
+          <label for="schedule" class="col-lg-2 control-label">Schedule</label>
           <div class="col-lg-10">
+            <div class="radio">
+              <label>
+                <input type="radio" name="schedule" id="schedule" value="custom">
+                custom
+              </label>
+            </div>
+            <input type="text" name="schedule_value" id="schedule_value" class="form-control datetimepicker">
             @foreach($schedules as $s)
             <div class="radio">
               <label>

@@ -44,13 +44,14 @@ class PostController extends BaseController {
 
         $content = Input::get('content');
         $post_now = Input::get('post_now');
+        $schedule_type = Input::get('schedule');
 
         $schedule_id = Settings::where('user_id', '=', $user_id)->pluck('schedule_id');
         $current_datetime = Carbon::now();
 
         $schedule = Carbon::now();
 
-        if($post_now == '0'){
+        if($post_now == '0' && $schedule_type != 'custom'){
             if(!empty($schedule_id)){
                 $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
                 $interval = Interval::find($interval_id);
@@ -88,7 +89,10 @@ class PostController extends BaseController {
             if(empty($schedule)){
                 $schedule = $current_datetime->addHours(1);
             }
+        }else{
+            $schedule = Carbon::parse(Input::get('schedule_value'));
         }
+
 
         if(Input::has('network')){
 
