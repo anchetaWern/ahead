@@ -46,32 +46,35 @@ class PostController extends BaseController {
         $post_now = Input::get('post_now');
         $schedule_type = Input::get('schedule');
 
+
         $schedule_id = Settings::where('user_id', '=', $user_id)->pluck('schedule_id');
         $current_datetime = Carbon::now();
 
         $schedule = Carbon::now();
 
         if($post_now == '0' && $schedule_type != 'custom'){
-            if(!empty($schedule_id)){
-                $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
-                $interval = Interval::find($interval_id);
 
-                if($interval->rule == 'add'){
-                   $schedule = $current_datetime->addHours($interval->hours);
-                }else if($interval->rule == 'random'){
+            $schedule_id = $schedule_type;
 
-                    $current_day = date('d');
-                    $days_to_add = $interval->hours / 24;
+            $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
+            $interval = Interval::find($interval_id);
 
-                    $day = mt_rand($current_day, $current_day + $days_to_add);
-                    $hour = mt_rand(1, 23);
-                    $minute = mt_rand(0, 59);
-                    $second = mt_rand(0, 59);
+            if($interval->rule == 'add'){
+               $schedule = $current_datetime->addHours($interval->hours);
+            }else if($interval->rule == 'random'){
 
-                    //year, month and timezone is null
-                    $schedule = Carbon::create(null, null, $day, $hour, $minute, $second, null);
-                }
+                $current_day = date('d');
+                $days_to_add = $interval->hours / 24;
+
+                $day = mt_rand($current_day, $current_day + $days_to_add);
+                $hour = mt_rand(1, 23);
+                $minute = mt_rand(0, 59);
+                $second = mt_rand(0, 59);
+
+                //year, month and timezone is null
+                $schedule = Carbon::create(null, null, $day, $hour, $minute, $second, null);
             }
+
 
             $last_post = Post::where('user_id', '=', $user_id)
                 ->orderBy('date_time', 'desc')
@@ -92,7 +95,6 @@ class PostController extends BaseController {
         }else{
             $schedule = Carbon::parse(Input::get('schedule_value'));
         }
-
 
         if(Input::has('network')){
 
