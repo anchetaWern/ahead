@@ -197,5 +197,3 @@ With that, you're now ready to deploy the app. If you have any questions or you'
 ##TODO
 
 - shuffling of post schedules
-- date time picker for custom post schedule
-- calendar for viewing scheduled post
