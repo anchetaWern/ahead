@@ -17,6 +17,10 @@
   <link rel="stylesheet" href="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}">
   @endif
 
+  @if(!empty($posts_calendar))
+  <link rel="stylesheet" href="{{ asset('assets/lib/fullcalendar/fullcalendar.min.css') }}">
+  @endif
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -52,6 +56,7 @@
             <ul class="dropdown-menu">
               <li><a href="/post/new">New</a></li>
               <li><a href="/posts">List</a></li>
+              <li><a href="/posts/calendar">Calendar</a></li>
             </ul>
           </li>
           <li class="dropdown">
@@ -92,6 +97,12 @@
   <script src="{{ asset('assets/js/moment.min.js') }}"></script>
   <script src="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
   <script src="{{ asset('assets/js/new_post.js') }}"></script>
+  @endif
+
+  @if(!empty($posts_calendar))
+  <script src="{{ asset('assets/js/moment.min.js') }}"></script>
+  <script src="{{ asset('assets/lib/fullcalendar/fullcalendar.min.js') }}"></script>
+  <script src="{{ asset('assets/js/posts_calendar.js') }}"></script>
   @endif
 </body>
 </html>

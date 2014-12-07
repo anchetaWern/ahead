@@ -139,6 +139,33 @@ class PostController extends BaseController {
     }
 
 
+    public function postsCalendar(){
+
+        $this->layout->title = 'Posts';
+        $this->layout->posts_calendar = true;
+        $this->layout->content = View::make('admin.posts_calendar');
+
+    }
+
+
+    public function postsCalendarItems(){
+
+        $start = Input::get('start');
+        $end = Input::get('end');
+
+        $start_date = date('Y-m-d', strtotime($start));
+        $end_date = date('Y-m-d', strtotime($end));
+
+        $posts = Post::where('user_id', '=', Auth::user()->id)
+            ->select(DB::raw("SUBSTRING(content, 1, 25) AS title"), 'date_time AS start')
+            ->whereRaw(DB::raw("DATE(date_time) BETWEEN '$start_date' AND '$end_date'"))
+            ->get();
+
+        return $posts;
+
+    }
+
+
     public function editPost($post_id){
 
         $user_id = Auth::user()->id;
