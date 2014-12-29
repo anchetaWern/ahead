@@ -4,7 +4,7 @@ class PostController extends BaseController {
 
     protected $layout = 'layouts.admin';
 
-    public function newPost(){
+    public function newPost($datetime = null){
 
         $user_id = Auth::user()->id;
 
@@ -14,11 +14,22 @@ class PostController extends BaseController {
         $default_networks = json_decode($settings->default_networks);
         $schedules = Schedule::where('user_id', '=', $user_id)->get();
 
+        $custom_schedule_checked = '';
+        $default_schedule = $settings->schedule_id;
+        if(!is_null($datetime)){
+            $custom_schedule_checked = 'checked';
+            $default_schedule = 0;
+            Session::put('post.has_datetime', true);
+        }
+
+
         $page_data = array(
             'networks' => $networks,
             'default_networks' => $default_networks,
-            'default_schedule' => $settings->schedule_id,
-            'schedules' => $schedules
+            'default_schedule' => $default_schedule,
+            'schedules' => $schedules,
+            'custom_schedule_checked' => $custom_schedule_checked,
+            'datetime' => date('m/d/Y h:i:s A', strtotime(str_replace('-', '/', $datetime)))
         );
         $this->layout->title = 'Schedule New Post';
         $this->layout->new_post = true;

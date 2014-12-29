@@ -14,5 +14,10 @@ $('#posts-calendar').fullCalendar({
       url: '/posts/calendar',
       type: 'POST'
     }
-  ]
+  ],
+  select: function(start, end, jsEvent, view){
+
+    var datetime = moment(start).format('MM-DD-YYYY HH:mm:ss');
+    window.location.href = '/post/new/' + datetime;
+  }
 });

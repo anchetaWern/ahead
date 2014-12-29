@@ -11,6 +11,14 @@
 |
 */
 
+App::before(function($request)
+{
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Request-With');
+    header('Access-Control-Allow-Credentials: true');
+});
+
 Route::filter('nocache', function($route, $request, $response){
   $response->header('Expires', 'Tue, 1 Jan 1980 00:00:00 GMT');
   $response->header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -48,7 +56,7 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::get('/schedules', 'SettingsController@schedules');
 
 
-    Route::get('/post/new', 'PostController@newPost');
+    Route::get('/post/new/{datetime?}', 'PostController@newPost');
     Route::post('/post/create', 'PostController@createPost');
 
     Route::get('/posts', 'PostController@posts');

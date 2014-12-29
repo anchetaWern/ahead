@@ -44,11 +44,11 @@
           <div class="col-lg-10">
             <div class="radio">
               <label>
-                <input type="radio" name="schedule" id="schedule" value="custom">
+                <input type="radio" name="schedule" id="schedule" value="custom" {{ $custom_schedule_checked }}>
                 custom
               </label>
             </div>
-            <input type="text" name="schedule_value" id="schedule_value" class="form-control datetimepicker">
+            <input type="text" name="schedule_value" id="schedule_value" class="form-control datetimepicker" value="{{ $datetime }}">
             @foreach($schedules as $s)
             <div class="radio">
               <label>
