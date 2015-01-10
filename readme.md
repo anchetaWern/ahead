@@ -1,3 +1,6 @@
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=wernancheta&url=https://github.com/anchetaWern/ahead&title=ahead&language=php&tags=github&category=software)
+
+
 #Ahead
 
 Allows you to schedule posts to your Facebook, Twitter and LinkedIn accounts.
