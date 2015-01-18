@@ -17,13 +17,23 @@
         </div>
 
         <div class="form-group">
-          <label for="interval" class="col-lg-2 control-label">Interval</label>
+          <label for="rule" class="col-lg-2 control-label">Rule</label>
           <div class="col-lg-10">
-            <select name="interval" id="interval" class="form-control">
-            @foreach($intervals as $s)
-              <option value="{{ $s->id }}">{{ $s->name }}</option>
+            @foreach($rules as $rule)
+            <div class="radio">
+              <label>
+                <input type="radio" name="rule" id="{{ $rule }}" value="{{ $rule }}">
+                {{ $rule }}
+              </label>
+            </div>
             @endforeach
-            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="period" class="col-lg-2 control-label">Period</label>
+          <div class="col-lg-10">
+            <input type="text" id="period" name="period" class="form-control">
           </div>
         </div>
 

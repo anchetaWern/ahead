@@ -12,14 +12,16 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Interval</th>
+          <th>Rule</th>
+          <th>Period</th>
         </tr>
       </thead>
       <tbody>
       @foreach($schedules as $p)
         <tr>
-          <td>{{ $p->schedule_name }}</td>
-          <td>{{ $p->interval_name }}</td>
+          <td>{{ $p->name }}</td>
+          <td>{{ $p->rule }}</td>
+          <td>{{ $p->period }}</td>
         </tr>
       @endforeach
       </tbody>

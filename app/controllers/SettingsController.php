@@ -47,10 +47,8 @@ class SettingsController extends BaseController {
 
     public function newSchedule(){
 
-        $intervals = Interval::get();
-
         $page_data = array(
-            'intervals' => $intervals
+            'rules' => array('add', 'random')
         );
 
         $this->layout->title = 'New Schedule';
@@ -62,8 +60,20 @@ class SettingsController extends BaseController {
     public function createSchedule(){
 
         $rules = array(
-            'name' => 'required'
+            'name' => 'required',
+            'rule' => 'required',
+            'period' => 'required'
         );
+
+        $period = Input::get('period');
+
+        try{
+            Carbon::now()->modify('+ ' . $period);
+        }catch(Exception $e){
+            return Redirect::to('/schedules/new')
+                ->with('message', array('type' => 'danger', 'text' => 'Period has invalid format'));
+        }
+
 
         $validator = Validator::make(Input::all(), $rules);
 
@@ -74,7 +84,8 @@ class SettingsController extends BaseController {
 
         $schedule = new Schedule;
         $schedule->user_id = Auth::user()->id;
-        $schedule->interval_id = Input::get('interval');
+        $schedule->rule = Input::get('rule');
+        $schedule->period = $period;
         $schedule->name = Input::get('name');
         $schedule->save();
 
@@ -85,10 +96,7 @@ class SettingsController extends BaseController {
 
     public function schedules(){
 
-        $schedules = DB::table('schedules')
-            ->join('intervals', 'schedules.interval_id', '=', 'intervals.id')
-            ->select('schedules.name AS schedule_name', 'intervals.name AS interval_name')
-            ->where('schedules.user_id', '=', Auth::user()->id)
+        $schedules = Schedule::where('user_id', '=', Auth::user()->id)
             ->paginate(10);
 
         $page_data = array(

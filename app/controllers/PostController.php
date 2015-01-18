@@ -67,15 +67,19 @@ class PostController extends BaseController {
 
             $schedule_id = $schedule_type;
 
-            $interval_id = Schedule::where('user_id', '=', $user_id)->where('id', '=', $schedule_id)->pluck('interval_id');
-            $interval = Interval::find($interval_id);
+            $interval = Schedule::find($schedule_id);
 
             if($interval->rule == 'add'){
-               $schedule = $current_datetime->addHours($interval->hours);
+
+               $schedule = $current_datetime->modify('+ ' . $interval->period);
+
             }else if($interval->rule == 'random'){
 
                 $current_day = date('d');
-                $days_to_add = $interval->hours / 24;
+
+                $from_datetime = Carbon::now();
+                $to_datetime = $from_datetime->copy()->modify('+ ' . $interval->period);
+                $days_to_add = $from_datetime->diffInDays($to_datetime);
 
                 $day = mt_rand($current_day, $current_day + $days_to_add);
                 $hour = mt_rand(1, 23);
@@ -84,20 +88,6 @@ class PostController extends BaseController {
 
                 //year, month and timezone is null
                 $schedule = Carbon::create(null, null, $day, $hour, $minute, $second, null);
-            }
-
-
-            $last_post = Post::where('user_id', '=', $user_id)
-                ->orderBy('date_time', 'desc')
-                ->first();
-            if(!empty($last_post)){
-                $new_datetime = Carbon::parse($last_post->date_time);
-                if($interval->rule == 'add'){
-                    $new_schedule = $new_datetime->addHours($interval->hours);
-                    if($new_schedule->gt($schedule)){
-                        $schedule = $new_schedule;
-                    }
-                }
             }
 
             if(empty($schedule)){
@@ -112,7 +102,7 @@ class PostController extends BaseController {
             $post = new Post;
             $post->user_id = $user_id;
             $post->content = $content;
-            $post->date_time = $schedule;
+            $post->date_time = $schedule->toDateTimeString();
             $post->save();
             $post_id = $post->id;
 
@@ -127,7 +117,7 @@ class PostController extends BaseController {
                 $post_network->save();
             }
 
-            Queue::later($schedule, 'SendPost@fire', array('post_id' => $post_id));
+            Queue::later($schedule->toDateTimeString(), 'SendPost@fire', array('post_id' => $post_id));
         }
 
         return Redirect::to('/post/new')
