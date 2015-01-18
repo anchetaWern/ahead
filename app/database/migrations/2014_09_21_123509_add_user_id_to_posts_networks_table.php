@@ -25,7 +25,9 @@ class AddUserIdToPostsNetworksTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::table('posts_networks', function($table){
+            $table->dropColumn('user_id');
+        });
 	}
 
 }

@@ -27,7 +27,10 @@ class AddTypeAndSocialIdFieldToUsersTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::table('users', function($table){
+            $table->dropColumn('type');
+            $table->dropColumn('social_id');
+        });
 	}
 
 }

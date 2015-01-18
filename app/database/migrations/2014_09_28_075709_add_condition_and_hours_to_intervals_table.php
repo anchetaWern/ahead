@@ -26,7 +26,10 @@ class AddConditionAndHoursToIntervalsTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::table('intervals', function($table){
+            $table->dropColumn('rule');
+            $table->dropColumn('hours');
+        });
 	}
 
 }

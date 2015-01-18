@@ -25,7 +25,9 @@ class AddDefaultScheduleToSettingsTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::table('settings', function($table){
+            $table->dropColumn('schedule_id');
+        });
 	}
 
 }

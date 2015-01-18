@@ -28,7 +28,7 @@ class CreatePostsNetworksTable extends Migration {
 	 */
 	public function down()
 	{
-		//
+		Schema::dropIfExists('posts_networks');
 	}
 
 }
