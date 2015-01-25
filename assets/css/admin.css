@@ -1,4 +1,38 @@
+.col-centered{
+   float: none;
+   margin: 0 auto;
+}
+
 #networks li {
    list-style: none;
    margin-bottom: 10px;
+}
+
+.post {
+   padding: 20px;
+   border: 1px solid #ececec;
+   margin-bottom: 10px;
+   cursor: pointer;
+}
+
+.post-time {
+   float: right;
+   padding-left: 10px;
+}
+
+.post-content {
+   font-size: 18px;
+}
+
+.published-0 {
+   background: #A9FF86;
+}
+
+.published-1 {
+   background: #EBFFA3;
+}
+
+.postnetworks {
+   display: none;
+   margin-top: 10px;
 }

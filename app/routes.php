@@ -64,6 +64,8 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::post('/posts', 'PostController@updatePost');
     Route::get('/posts/calendar', 'PostController@postsCalendar');
     Route::post('/posts/calendar', 'PostController@postsCalendarItems');
+
+    Route::post('/post/networks', 'PostController@postNetworks');
 });
 
 Route::get('/fb/redirect', 'SocialController@redirectFacebook');

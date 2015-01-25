@@ -93,6 +93,10 @@
   <script src="{{ asset('assets/js/jquery.js') }}"></script>
   <script src="{{ asset('assets/lib/lumen/js/bootstrap.js') }}"></script>
 
+  @if(!empty($handlebars))
+  <script src="{{ asset('assets/js/handlebars.js') }}"></script>
+  @endif
+
   @if(!empty($new_post))
   <script src="{{ asset('assets/js/moment.min.js') }}"></script>
   <script src="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js') }}"></script>
@@ -103,6 +107,10 @@
   <script src="{{ asset('assets/js/moment.min.js') }}"></script>
   <script src="{{ asset('assets/lib/fullcalendar/fullcalendar.min.js') }}"></script>
   <script src="{{ asset('assets/js/posts_calendar.js') }}"></script>
+  @endif
+
+  @if(!empty($posts))
+  <script src="{{ asset('assets/js/posts.js') }}"></script>
   @endif
 </body>
 </html>

@@ -138,6 +138,8 @@ class PostController extends BaseController {
         );
 
         $this->layout->title = 'Posts';
+        $this->layout->posts = true;
+        $this->layout->handlebars = true;
         $this->layout->content = View::make('admin.posts', $page_data);
 
     }
@@ -264,6 +266,20 @@ class PostController extends BaseController {
 
     }
 
+
+    public function postNetworks(){
+
+        $id = Input::get('id');
+        $posts_networks = DB::table('posts_networks')
+            ->join('networks', 'posts_networks.network_id', '=', 'networks.id')
+            ->where('posts_networks.post_id', '=', $id)
+            ->where('posts_networks.status', '=', 1)
+            ->select('networks.network', 'networks.username')
+            ->get();
+
+        return $posts_networks;
+
+    }
 
 
 }
