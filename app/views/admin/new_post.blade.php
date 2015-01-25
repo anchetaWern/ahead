@@ -14,7 +14,7 @@
         <div class="form-group">
           <label for="content" class="col-lg-2 control-label">Content</label>
           <div class="col-lg-10">
-            <textarea name="content" id="content" cols="60" rows="5" class="form-control"></textarea>
+            <textarea name="content" id="content" cols="60" rows="5" class="form-control" value="{{ Input::old('content') }}">{{ Input::old('content') }}</textarea>
           </div>
         </div>
 
@@ -26,7 +26,7 @@
               <label>
               <?php
               $checked = '';
-              if(in_array($n->id, $default_networks)){
+              if(in_array($n->id, Input::old('network', $default_networks))){
                 $checked = 'checked';
               }
               ?>
@@ -48,13 +48,13 @@
                 custom
               </label>
             </div>
-            <input type="text" name="schedule_value" id="schedule_value" class="form-control datetimepicker" value="{{ $datetime }}">
+            <input type="text" name="schedule_value" id="schedule_value" class="form-control datetimepicker" value="{{ Input::old('schedule_value', $datetime) }}">
             @foreach($schedules as $s)
             <div class="radio">
               <label>
               <?php
               $schedule_checked = '';
-              if($s->id == $default_schedule){
+              if($s->id == Input::old('schedule', $default_schedule)){
                 $schedule_checked = 'checked';
               }
               ?>

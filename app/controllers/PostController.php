@@ -50,7 +50,8 @@ class PostController extends BaseController {
 
         if($validator->fails()){
             return Redirect::to('/post/new')
-                ->withErrors($validator);
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $content = Input::get('content');

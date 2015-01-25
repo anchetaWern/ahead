@@ -71,7 +71,8 @@ class SettingsController extends BaseController {
             Carbon::now()->modify('+ ' . $period);
         }catch(Exception $e){
             return Redirect::to('/schedules/new')
-                ->with('message', array('type' => 'danger', 'text' => 'Period has invalid format'));
+                ->with('message', array('type' => 'danger', 'text' => 'Period has invalid format'))
+                ->withInput();
         }
 
 
@@ -79,7 +80,8 @@ class SettingsController extends BaseController {
 
         if($validator->fails()){
             return Redirect::to('/schedules/new')
-                ->withErrors($validator);
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $schedule = new Schedule;
