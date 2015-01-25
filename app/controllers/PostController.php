@@ -4,7 +4,7 @@ class PostController extends BaseController {
 
     protected $layout = 'layouts.admin';
 
-    public function newPost($datetime = null){
+    public function newPost(){
 
         $user_id = Auth::user()->id;
 
@@ -16,11 +16,6 @@ class PostController extends BaseController {
 
         $custom_schedule_checked = '';
         $default_schedule = $settings->schedule_id;
-        if(!is_null($datetime)){
-            $custom_schedule_checked = 'checked';
-            $default_schedule = 0;
-            Session::put('post.has_datetime', true);
-        }
 
 
         $page_data = array(
@@ -28,8 +23,7 @@ class PostController extends BaseController {
             'default_networks' => $default_networks,
             'default_schedule' => $default_schedule,
             'schedules' => $schedules,
-            'custom_schedule_checked' => $custom_schedule_checked,
-            'datetime' => date('m/d/Y h:i:s A', strtotime(str_replace('-', '/', $datetime)))
+            'custom_schedule_checked' => $custom_schedule_checked
         );
         $this->layout->title = 'Schedule New Post';
         $this->layout->new_post = true;
@@ -49,9 +43,13 @@ class PostController extends BaseController {
         $validator = Validator::make(Input::all(), $rules);
 
         if($validator->fails()){
-            return Redirect::to('/post/new')
-                ->withErrors($validator)
-                ->withInput();
+            if(Input::has('ajax')){
+                return array('type' => 'danger', 'messages' => $validator->messages());
+            }else{
+                return Redirect::to('/post/new')
+                    ->withErrors($validator)
+                    ->withInput();
+            }
         }
 
         $content = Input::get('content');
@@ -121,6 +119,9 @@ class PostController extends BaseController {
             Queue::later($schedule->toDateTimeString(), 'SendPost@fire', array('post_id' => $post_id));
         }
 
+        if(Input::has('ajax')){
+            return array('type' => 'success', 'text' => 'Your post was scheduled!');
+        }
         return Redirect::to('/post/new')
             ->with('message', array('type' => 'success', 'text' => 'Your post was scheduled!'));
     }
@@ -147,9 +148,31 @@ class PostController extends BaseController {
 
     public function postsCalendar(){
 
+        $user_id = Auth::user()->id;
+
+        $networks = Network::where('user_id', '=', $user_id)->get();
+        $settings = Settings::where('user_id', '=', $user_id)->first();
+
+        $default_networks = json_decode($settings->default_networks);
+        $schedules = Schedule::where('user_id', '=', $user_id)->get();
+
+        $custom_schedule_checked = '';
+        $default_schedule = $settings->schedule_id;
+
+
+        $page_data = array(
+            'networks' => $networks,
+            'default_networks' => $default_networks,
+            'default_schedule' => $default_schedule,
+            'schedules' => $schedules,
+            'custom_schedule_checked' => $custom_schedule_checked
+        );
+
         $this->layout->title = 'Posts';
+        $this->layout->handlebars = true;
         $this->layout->posts_calendar = true;
-        $this->layout->content = View::make('admin.posts_calendar');
+        $this->layout->new_post = true;
+        $this->layout->content = View::make('admin.posts_calendar', $page_data);
 
     }
 

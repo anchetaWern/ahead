@@ -15,10 +15,12 @@
   <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
   @if(!empty($new_post))
   <link rel="stylesheet" href="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/new_post.css') }}">
   @endif
 
   @if(!empty($posts_calendar))
   <link rel="stylesheet" href="{{ asset('assets/lib/fullcalendar/fullcalendar.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/posts_calendar.css') }}">
   @endif
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
