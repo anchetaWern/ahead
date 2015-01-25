@@ -190,7 +190,26 @@ class PostController extends BaseController {
             ->whereRaw(DB::raw("DATE(date_time) BETWEEN '$start_date' AND '$end_date'"))
             ->get();
 
-        return $posts;
+        $posts_items = array();
+        foreach($posts as $p){
+
+            $background_color = '#A9FF86';
+            if($p->published == 1){
+                $background_color = '#EBFFA3';
+            }
+
+
+            $posts_items[] = array(
+                'start' => $p->start,
+                'end' => Carbon::parse($p->start)->addMinutes(15)->toDateTimeString(),
+                'title' => $p->title,
+                'borderColor' => '#ececec',
+                'textColor' => '#000',
+                'backgroundColor' => $background_color
+            );
+        }
+
+        return $posts_items;
 
     }
 

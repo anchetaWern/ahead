@@ -7,7 +7,7 @@ $('#posts-calendar').fullCalendar({
     right: 'month,agendaWeek,agendaDay'
   },
   slotDuration: '00:15:00',
-  editable: true,
+  editable: false,
   eventLimit: true,
   defaultView: 'agendaWeek',
   selectable: true,
