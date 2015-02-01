@@ -14,12 +14,12 @@
           <div class="post-time">
           {{ Carbon::createFromTimeStamp(strtotime($p->date_time))->diffForHumans() }}
           </div>
-          <div class="post-content">
+          <div class="post-content" data-id="{{ $p->id }}">
           {{ $p->content }}
           </div>
           <div class="postnetworks"></div>
           <div>
-            <a href="/posts/{{ $p->id }}/edit">edit</a>
+            <a href="#" data-id="{{ $p->id }}" class="edit-post">edit</a>
           </div>
         </div>
       @endforeach
@@ -36,4 +36,6 @@
   </div>
 </div>
 @include('partials.postnetworks')
+@include('partials.post_modal')
+@include('partials.alertmodal')
 @stop

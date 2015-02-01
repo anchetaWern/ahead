@@ -129,17 +129,34 @@ class PostController extends BaseController {
 
     public function posts(){
 
-        $posts = Post::where('user_id', '=', Auth::user()->id)
+        $user_id = Auth::user()->id;
+
+        $posts = Post::where('user_id', '=', $user_id)
             ->orderBy('date_time', 'DESC')
             ->paginate(10);
 
+        $networks = Network::where('user_id', '=', $user_id)->get();
+        $settings = Settings::where('user_id', '=', $user_id)->first();
+
+        $default_networks = json_decode($settings->default_networks);
+        $schedules = Schedule::where('user_id', '=', $user_id)->get();
+
+        $custom_schedule_checked = '';
+        $default_schedule = $settings->schedule_id;
+
         $page_data = array(
             'posts' => $posts,
-            'post_count' => count($posts)
+            'post_count' => count($posts),
+            'networks' => $networks,
+            'default_networks' => $default_networks,
+            'default_schedule' => $default_schedule,
+            'schedules' => $schedules,
+            'custom_schedule_checked' => $custom_schedule_checked
         );
 
         $this->layout->title = 'Posts';
         $this->layout->posts = true;
+        $this->layout->posts_list = true;
         $this->layout->handlebars = true;
         $this->layout->content = View::make('admin.posts', $page_data);
 
@@ -170,6 +187,7 @@ class PostController extends BaseController {
 
         $this->layout->title = 'Posts';
         $this->layout->handlebars = true;
+        $this->layout->posts = true;
         $this->layout->posts_calendar = true;
         $this->layout->new_post = true;
         $this->layout->content = View::make('admin.posts_calendar', $page_data);
@@ -186,7 +204,7 @@ class PostController extends BaseController {
         $end_date = date('Y-m-d', strtotime($end));
 
         $posts = Post::where('user_id', '=', Auth::user()->id)
-            ->select(DB::raw("SUBSTRING(content, 1, 25) AS title"), 'date_time AS start')
+            ->select('id', DB::raw("SUBSTRING(content, 1, 25) AS title"), 'date_time AS start')
             ->whereRaw(DB::raw("DATE(date_time) BETWEEN '$start_date' AND '$end_date'"))
             ->get();
 
@@ -200,6 +218,7 @@ class PostController extends BaseController {
 
 
             $posts_items[] = array(
+                'id' => $p->id,
                 'start' => $p->start,
                 'end' => Carbon::parse($p->start)->addMinutes(15)->toDateTimeString(),
                 'title' => $p->title,
@@ -214,7 +233,7 @@ class PostController extends BaseController {
     }
 
 
-    public function editPost($post_id){
+    public function viewPost($post_id){
 
         $user_id = Auth::user()->id;
 
@@ -229,15 +248,15 @@ class PostController extends BaseController {
             ->where('status', '=', 1)
             ->lists('network_id');
 
-        $page_data = array(
+        $response_data = array(
             'post_id' => $post_id,
             'post' => $post,
             'networks' => $networks,
             'selected_networks' => $selected_networks
         );
 
-        $this->layout->title = 'Edit Post';
-        $this->layout->content = View::make('admin.edit_post', $page_data);
+        return $response_data;
+
     }
 
 
@@ -251,7 +270,7 @@ class PostController extends BaseController {
 
         $validator = Validator::make(Input::all(), $rules);
 
-        $post_id = Input::get('post_id');
+        $post_id = Input::get('id');
 
         if($validator->fails()){
             return Redirect::back()
@@ -303,9 +322,17 @@ class PostController extends BaseController {
             }
         }
 
-        return Redirect::back()
-            ->with('message', array('type' => 'success', 'text' => 'Post was updated!'));
+        $response_data = array(
+            'type' => 'success',
+            'text' => 'Post was updated!',
+            'post' => array(
+                'id' => $post_id,
+                'title' => substr($content, 0, 24),
+                'content' => $content
+            )
+        );
 
+        return $response_data;
     }
 
 

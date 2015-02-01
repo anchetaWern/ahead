@@ -60,8 +60,8 @@ Route::group(array('before' => 'auth', 'after' => 'nocache'), function(){
     Route::post('/post/create', 'PostController@createPost');
 
     Route::get('/posts', 'PostController@posts');
-    Route::get('/posts/{id}/edit', 'PostController@editPost');
-    Route::post('/posts', 'PostController@updatePost');
+    Route::post('/post/{id}', 'PostController@viewPost');
+    Route::post('/post/update', 'PostController@updatePost');
     Route::get('/posts/calendar', 'PostController@postsCalendar');
     Route::post('/posts/calendar', 'PostController@postsCalendarItems');
 

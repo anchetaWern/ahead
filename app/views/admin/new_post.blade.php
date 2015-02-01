@@ -6,7 +6,7 @@
 </div>
 <div class="row">
   <div class="col-md-5" id="newpost">
-  @include('partials.new_post')
+  @include('partials.post')
   </div>
 </div>
 @stop

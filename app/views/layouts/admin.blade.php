@@ -13,6 +13,11 @@
   <link rel="stylesheet" href="{{ asset('assets/lib/lumen/css/bootstrap.css') }}">
   <link href="{{ asset('assets/lib/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+
+  @if(!empty($posts))
+  <link rel="stylesheet" href="{{ asset('assets/css/posts.css') }}">
+  @endif
+
   @if(!empty($new_post))
   <link rel="stylesheet" href="{{ asset('assets/lib/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/new_post.css') }}">
@@ -20,7 +25,6 @@
 
   @if(!empty($posts_calendar))
   <link rel="stylesheet" href="{{ asset('assets/lib/fullcalendar/fullcalendar.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/posts_calendar.css') }}">
   @endif
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -105,14 +109,18 @@
   <script src="{{ asset('assets/js/new_post.js') }}"></script>
   @endif
 
+  @if(!empty($posts))
+  <script src="{{ asset('assets/js/posts.js') }}"></script>
+  @endif
+
   @if(!empty($posts_calendar))
   <script src="{{ asset('assets/js/moment.min.js') }}"></script>
   <script src="{{ asset('assets/lib/fullcalendar/fullcalendar.min.js') }}"></script>
   <script src="{{ asset('assets/js/posts_calendar.js') }}"></script>
   @endif
 
-  @if(!empty($posts))
-  <script src="{{ asset('assets/js/posts.js') }}"></script>
+  @if(!empty($posts_list))
+  <script src="{{ asset('assets/js/posts_list.js') }}"></script>
   @endif
 </body>
 </html>

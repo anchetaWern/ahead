@@ -1,6 +1,4 @@
-var alertmodal_template = Handlebars.compile($('#alertmodal-template').html());
-
-$('#posts-calendar').fullCalendar({
+var calendar = $('#posts-calendar').fullCalendar({
   header: {
     left: 'prev,next today',
     center: 'title',
@@ -21,42 +19,39 @@ $('#posts-calendar').fullCalendar({
 
     var datetime = moment(start).format('MM/DD/YYYY HH:mm A');
 
+    $('#post_id').val('');
     $('#content').val('').text('');
     $('#alertmodal-container').html('');
     $('#schedule').attr('checked', true);
     $('#schedule_value').val(datetime);
     $('.datetimepicker').data('DateTimePicker').setDate(datetime);
-    $('#newpost_modal').modal('show');
+    $('#btn-schedule').data('posturl', '/post/create').prop('disabled', false);
+
+    $('#post_modal .modal-title').text('Schedule New Post');
+    $('#post_modal #btn-schedule').text('Schedule');
+    $('#schedule-container').removeClass('hid');
+    $('#post_modal').modal('show');
+
+  },
+  eventClick: function(calEvent, jsEvent, view){
+
+    current_event = calEvent;
+    viewPost(calEvent.id);
   }
 });
 
 
 $('#btn-schedule').click(function(e){
   e.preventDefault();
-  if($(this).parents('.modal').length){
+  var self = $(this);
+  if(self.parents('.modal').length){
 
-    var content = $('#content').val();
-    var post_networks = [];
-    $('input[name="network[]"]:checked').each(function(){
-      post_networks.push($(this).val());
+    updatePost(function(response){
+      current_event.title = response.post.title;
+      calendar.fullCalendar('updateEvent', current_event);
     });
-    var schedule = $('input[name="schedule"]:checked').val();
-    var schedule_value = $('#schedule_value').val();
-    $.post(
-      '/post/create',
-      {
-        'ajax': '1',
-        'content': content,
-        'network': post_networks,
-        'schedule': schedule,
-        'schedule_value': schedule_value
-      },
-      function(response){
-        $('#alertmodal-container').html(alertmodal_template(response));
-      }
-    );
+
   }else{
     $('#form_newpost').submit();
   }
-
 });

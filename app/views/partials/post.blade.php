@@ -3,6 +3,7 @@
   <fieldset>
     <legend>Schedule New Post</legend>
     <div id="alertmodal-container"></div>
+    <input type="hidden" name="post_id" id="post_id">
     <input type="hidden" name="post_now" id="post_now" value="0">
     <div class="form-group">
       <label for="content" class="col-lg-2 control-label">Content</label>
@@ -23,7 +24,7 @@
             $checked = 'checked';
           }
           ?>
-            <input type="checkbox" name="network[]" value="{{ $n->id }}" {{ $checked }}>
+            <input type="checkbox" name="network[]" class="network" data-id="{{ $n->id }}" value="{{ $n->id }}" {{ $checked }}>
             {{ $n->username }} ({{ $n->network }})
           </label>
         </div>
@@ -32,7 +33,7 @@
       </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" id="schedule-container">
       <label for="schedule" class="col-lg-2 control-label">Schedule</label>
       <div class="col-lg-10">
         <div class="radio">
@@ -51,7 +52,7 @@
             $schedule_checked = 'checked';
           }
           ?>
-            <input type="radio" name="schedule" id="schedule_{{ $s->id }}" value="{{ $s->id }}" {{ $schedule_checked }}>
+            <input type="radio" name="schedule" class="schedule" id="schedule_{{ $s->id }}" value="{{ $s->id }}" {{ $schedule_checked }}>
             {{ $s->name }}
           </label>
         </div>
@@ -73,7 +74,7 @@
           </ul>
         </div>
 
-        <button type="submit" id="btn-schedule" class="btn btn-primary">Schedule</button>
+        <button type="submit" id="btn-schedule" class="btn btn-primary"></button>
 
       </div>
     </div>
