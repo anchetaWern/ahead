@@ -200,9 +200,5 @@ With that, you're now ready to deploy the app. If you have any questions or you'
 ##TODO
 
 - recurring posts
-- calendar UI: different color for published and to be published post
-- calendar: use modal when scheduling new post
-- calendar:
-- list UI: only show posts to be published
 - delicious integration - pick URL's to be published
 - profiles - a way of grouping connected accounts
