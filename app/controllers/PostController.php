@@ -117,7 +117,7 @@ class PostController extends BaseController {
                 $post_network->save();
             }
 
-            Queue::later($schedule->toDateTimeString(), 'SendPost@fire', array('post_id' => $post_id));
+            Queue::later($schedule, 'SendPost@fire', array('post_id' => $post_id));
         }
 
         if(Input::has('ajax')){
