@@ -96,6 +96,7 @@ class PostController extends BaseController {
             $schedule = Carbon::parse(Input::get('schedule_value'));
         }
 
+
         if(Input::has('network')){
 
             $post = new Post;
@@ -120,10 +121,10 @@ class PostController extends BaseController {
         }
 
         if(Input::has('ajax')){
-            return array('type' => 'success', 'text' => 'Your post was scheduled!');
+            return array('type' => 'success', 'text' => 'Your post was scheduled! It will be published on ' . $schedule->format('l jS \o\f F \a\t h:i A'));
         }
         return Redirect::to('/post/new')
-            ->with('message', array('type' => 'success', 'text' => 'Your post was scheduled!'));
+            ->with('message', array('type' => 'success', 'text' => 'Your post was scheduled! It will be published on ' . $schedule->format('l jS \o\f F \a\t h:i A')));
     }
 
 
