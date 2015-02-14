@@ -97,28 +97,31 @@ class PostController extends BaseController {
         }
 
 
-        if(Input::has('network')){
-
-            $post = new Post;
-            $post->user_id = $user_id;
-            $post->content = $content;
-            $post->date_time = $schedule->toDateTimeString();
-            $post->save();
-            $post_id = $post->id;
-
-            $networks = Input::get('network');
-
-            foreach($networks as $network_id){
-                $post_network = new PostNetwork;
-                $post_network->user_id = $user_id;
-                $post_network->post_id = $post_id;
-                $post_network->network_id = $network_id;
-                $post_network->status = 1;
-                $post_network->save();
-            }
-
-            Queue::later($schedule, 'SendPost@fire', array('post_id' => $post_id));
+        $networks = Input::get('network');
+        if(empty($networks)){
+            $networks = Setting::where('user_id', '=', $user_id)->pluck('default_networks');
+            $networks = json_decode($networks, true);
         }
+
+        $post = new Post;
+        $post->user_id = $user_id;
+        $post->content = $content;
+        $post->date_time = $schedule->toDateTimeString();
+        $post->save();
+        $post_id = $post->id;
+
+
+        foreach($networks as $network_id){
+            $post_network = new PostNetwork;
+            $post_network->user_id = $user_id;
+            $post_network->post_id = $post_id;
+            $post_network->network_id = $network_id;
+            $post_network->status = 1;
+            $post_network->save();
+        }
+
+        Queue::later($schedule, 'SendPost@fire', array('post_id' => $post_id));
+
 
         if(Input::has('ajax')){
             return array('type' => 'success', 'text' => 'Your post was scheduled! It will be published on ' . $schedule->format('l jS \o\f F \a\t h:i A'));
