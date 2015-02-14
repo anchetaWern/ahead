@@ -6,8 +6,9 @@ class AdminController extends BaseController {
 
     public function index(){
 
+        $api_key = Settings::where('user_id', '=', Auth::user()->id)->pluck('api_key');
         $this->layout->title = 'Admin';
-        $this->layout->content = View::make('admin.index');
+        $this->layout->content = View::make('admin.index', array('api_key' => $api_key));
     }
 
 
