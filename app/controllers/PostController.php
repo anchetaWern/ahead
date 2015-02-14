@@ -36,8 +36,7 @@ class PostController extends BaseController {
         $user_id = Auth::user()->id;
 
         $rules = array(
-            'content' => 'required',
-            'schedule' => 'required'
+            'content' => 'required'
         );
 
         $validator = Validator::make(Input::all(), $rules);
@@ -55,7 +54,9 @@ class PostController extends BaseController {
         $content = Input::get('content');
         $post_now = Input::get('post_now');
         $schedule_type = Input::get('schedule');
-
+        if(empty($schedule_type)){
+            $schedule_type = Setting::where('user_id', '=', $user_id)->pluck('schedule_id');
+        }
 
         $schedule_id = Settings::where('user_id', '=', $user_id)->pluck('schedule_id');
         $current_datetime = Carbon::now();
