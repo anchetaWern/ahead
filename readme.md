@@ -5,9 +5,6 @@
 
 Allows you to schedule posts to your Facebook, Twitter and LinkedIn accounts.
 
-##Demo
-
-You can check out the demo [here](http://ec2-54-68-251-216.us-west-2.compute.amazonaws.com/)
 
 ##How to Install
 
@@ -98,7 +95,7 @@ return array(
         'clientId'  =>  '',
         'clientSecret'  =>  '',
         'redirectUri'   =>  url('/linkedin/connect'),
-        'scopes' => 'r_basicprofile rw_nus',
+        'scopes' => 'r_basicprofile w_share',
     ),
     'facebook' => array(
         'clientId'  =>  '',
@@ -197,8 +194,24 @@ Just input `yes` if being asked to confirm.
 
 With that, you're now ready to deploy the app. If you have any questions or you're having issues installing the app. Just file an issue to this repository and I'll try to answer.
 
-##TODO
 
-- recurring posts
-- delicious integration - pick URL's to be published
-- profiles - a way of grouping connected accounts
+##Issues
+
+There's one issue I've had with the project after cloning it. It seems that the philo/twitter library configuration no longer works. And what I did was to put the twitter configuration in the `app/config/social.php` file.
+
+```
+    'twitter' => array(
+        'consumer_key' => '',
+        'consumer_secret' => ''
+    ),
+```
+
+Once you've added the configuration, open the `vendor/philo/laravel-twitter/src/Philo/Twitter/Twitter.php` file and edit the code inside the constructor:
+
+```
+public function __construct()
+    {
+        $this->setConsumerKey(Config::get('social.twitter.consumer_key'));
+        $this->setConsumerSecret(Config::get('social.twitter.consumer_secret'));
+    }
+```
